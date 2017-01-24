@@ -1,7 +1,7 @@
-#include <OneWire.h> 
-#include <ShiftDisplay.h>
+#include <OneWire.h> // Dallas Semi Temperature sensor
+#include <ShiftDisplay.h> // 74HC595 Shift Registers for IEE FFD21 segment displays
 
-OneWire ds(6); // sensor pin
+OneWire ds(6); // Dallas Semi Sensor Pin
 
 int latchPin = 4;
 int clockPin = 3;
@@ -21,9 +21,9 @@ byte digit[] = {
 };
 
 int d = 1000; //delay time
-int dig1;
-int dig2;
-int tempPin = 6; // LM35 Pin
+int dig1; // Digit One
+int dig2; // Digit Two
+int tempPin = 6; // Dallas Semi Sensor Pin
 float temperature = 0;
 
 void setup() {
@@ -33,8 +33,8 @@ void setup() {
   dig1 = 11;
   dig2 = 11;
   dispTemp();
-  delay(d); //wait a d
-  analogReference(INTERNAL); //for Temp
+  delay(d); // Delay for time defined as d
+  analogReference(INTERNAL); // For Temp
 }
 
 void loop() {
@@ -63,25 +63,25 @@ void temp() {
     data[i] = ds.read();
 
   }
-  Temp = (data[1] << 8) + data[0]; //take the two bytes from the response relating to temperature
-  Temp = Temp >> 4; //divide by 16 to get pure celcius readout
-  Temp = Temp * 1.8 + 32; // comment this line out to get celcius
+  Temp = (data[1] << 8) + data[0]; // Take the two bytes from the response relating to temperature
+  Temp = Temp >> 4; // Divide by 16 to get pure Celcius readout
+  Temp = Temp * 1.8 + 32; // Math for Ferenheight - comment this line out to get Celcius
 
   if (Temp < 10) {
-    dig1 = 10; //show nothing
-    dig2 = Temp; //ones
+    dig1 = 10; // Show nothing
+    dig2 = Temp; // Ones
     dispTemp();
   } else {
-    dig1 = Temp / 10; //first digit tens
-    dig2 = Temp - dig1 * 10; // second digit ones
-    dispTemp(); // programm to run
+    dig1 = Temp / 10; // First Digit Tens
+    dig2 = Temp - dig1 * 10; // Second Digit Ones
+    dispTemp(); // Programm to run
   }
   delay(d);
 }
 
-void dispTemp() { //controls the display with shift registers
+void dispTemp() { // Controls the FFD21 displays with 74HC595 shift registers
   digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, MSBFIRST, digit[dig1]); //ones
-  shiftOut(dataPin, clockPin, MSBFIRST, digit[dig2]); //tens
+  shiftOut(dataPin, clockPin, MSBFIRST, digit[dig1]); // Ones
+  shiftOut(dataPin, clockPin, MSBFIRST, digit[dig2]); // Tens
   digitalWrite(latchPin, HIGH);
 }
