@@ -23,7 +23,7 @@ byte digit[] = {
 int d = 1000; //delay time
 int dig1;
 int dig2;
-int tempPin = 6; // LM35 Pin
+int tempPin = 6; // LM385 Pin
 float temperature = 0;
 
 void setup() {
